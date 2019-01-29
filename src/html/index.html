@@ -1,5 +1,22 @@
 {% extends 'layout/_main.html' %}
 
 {% block content %}
+<h1 class="title">Git API</h1>
+<div class="gitapp">
+  <input class="input-access-key" id="input-access-key" type="password" placeholder="put your accessKey here then Enter">
+  <div class="user">
+    <img class="user__avatar" id="userAvatar">
+    <p class="user__name">Name: <span id="userName"></span></p>
+    <p class="user__email" id="userEmail"></p>
+  </div>
+  <ul class="repos-list" id="repoList">
 
+  </ul>
+</div>
+
+<template id="repo-template">
+  <li class="repo">
+    <input class="repo__name" id="repoName" readonly>
+  </li>
+</template>
 {% endblock %}
