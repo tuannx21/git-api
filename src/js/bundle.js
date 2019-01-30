@@ -1,4 +1,4 @@
-import { getUser, getAllRepos, renameRepo, deleteRepo } from './promiseAPI';
+import { getUser, getAllRepos, renameRepo, deleteRepo, callAPI } from './promiseAPI';
 
 const labelAccessKey = 'git-access-key'
 const inputAccessKey = document.querySelector('#input-access-key')
