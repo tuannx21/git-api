@@ -1,3 +1,5 @@
+import {getUser, getAllRepos, renameRepo} from './promiseAPI';
+
 const labelAccessKey = 'git-access-key'
 const inputAccessKey = document.querySelector('#input-access-key')
 const imgUserAvatar = document.querySelector('#userAvatar')
@@ -36,33 +38,6 @@ const showRepos = (repos, accessKey) => {
 //Pure Function
 const filterByOwner = (repos) => {
   return repos.filter((repo) => (repo.owner.login === users.login))
-}
-
-//Promise
-const getUser = (accessKey) => {
-  return fetch('https://api.github.com/user', {
-    headers: { 'Authorization': `Bearer ${accessKey}` }
-  })
-    .then(response => response.json())
-}
-
-const getAllRepos = (accessKey) => {
-  return fetch('https://api.github.com/user/repos', {
-    headers: { 'Authorization': `Bearer ${accessKey}` }
-  })
-    .then(response => response.json())
-}
-
-const renameRepo = (accessKey, owner, oldName, newName) => {
-  return fetch(`https://api.github.com/repos/${owner}/${oldName}`, {
-    method: 'PATCH',
-    headers: {
-      'Authorization': `Bearer ${accessKey}`
-    },
-    body: JSON.stringify({
-      name: newName
-    })
-  })
 }
 
 //Util
