@@ -9,6 +9,7 @@
     <p class="user__name">Name: <span id="userName"></span></p>
     <p class="user__email" id="userEmail"></p>
   </div>
+  <button class="btn btn-add-repo" id="btn-add-repo">Create Repository</button>
   <ul class="repos-list" id="repoList">
 
   </ul>
@@ -17,6 +18,7 @@
 <template id="repo-template">
   <li class="repo">
     <input class="repo__name" id="repoName" readonly>
+    <button class="btn repo__remove" id="btnRemoveRepo"></button>
   </li>
 </template>
 {% endblock %}

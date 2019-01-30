@@ -1,4 +1,4 @@
-import {getUser, getAllRepos, renameRepo} from './promiseAPI';
+import { getUser, getAllRepos, renameRepo, deleteRepo } from './promiseAPI';
 
 const labelAccessKey = 'git-access-key'
 const inputAccessKey = document.querySelector('#input-access-key')
@@ -20,6 +20,7 @@ const showRepos = (repos, accessKey) => {
     let clone = template.content.cloneNode(true)
     let repoItem = clone.querySelector('li')
     let inputRepo = repoItem.querySelector('#repoName')
+    let removeRepo = repoItem.querySelector('#btnRemoveRepo')
 
     repoItem.id = repo.id
     inputRepo.value = repo.name
@@ -29,6 +30,13 @@ const showRepos = (repos, accessKey) => {
         this.readOnly = true
         renameRepo(accessKey, repo.owner.login, repo.name, this.value)
           .then(alert('U have edited success, it may take a while to completely rename'))
+      }
+    })
+    removeRepo.addEventListener('click', function () {
+      let confirmDeleteBox = confirm(`you sure you want to delete repo ${repo.name} ?????`)
+      if (confirmDeleteBox === true) {
+        deleteRepo(accessKey, repo.owner.login, repo.name)
+        loadData()
       }
     })
     reposList.appendChild(clone)
@@ -61,7 +69,7 @@ const onKeyPressAccessKey = () => {
     if (event.which === 13 || event.keyCode === 13) {
       clearAll()
       let accessKey = inputAccessKey.value;
-      saveToLocalStorage(labelAccessKey,accessKey)
+      saveToLocalStorage(labelAccessKey, accessKey)
       loadData(accessKey)
       inputAccessKey.value = ''
     }
@@ -75,12 +83,11 @@ const loadData = (accessKey) => {
     .then(user => { showUserInf(user) })
   getAllRepos(key)
     .then(repos => { showRepos(repos, key) })
-    .catch(error => { alert('can get repos') })
 }
 
 const App = () => {
- loadData();
- onKeyPressAccessKey()
+  loadData();
+  onKeyPressAccessKey()
 }
 
 //start App

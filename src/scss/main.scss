@@ -1,3 +1,13 @@
+.btn {
+  outline: 0;
+  border: 0;
+  cursor: pointer;
+
+  &:active {
+    opacity: 0.7;
+  }
+}
+
 .title {
   text-align: center;
 }
@@ -21,6 +31,15 @@
   outline: 0;
   padding: 5px 15px;
   box-sizing: border-box;
+}
+
+.btn-add-repo {
+  margin: 10px 0;
+  width: 100%;
+  font-size: 36px;
+  border-radius: 8px;
+  background-color: seagreen;
+  color: #fff;
 }
 
 .user {
@@ -52,6 +71,7 @@
 }
 
 .repo {
+  position: relative;
   margin-top: 10px;
   background: #fff;
   border-radius: 8px;
@@ -64,5 +84,15 @@
     border-radius: 8px;
     border: 0;
     outline: 0;
+  }
+
+  &__remove {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 5px;
+    width: 35px;
+    height: 35px;
+    background: url(/img/icon_bin.png) no-repeat center;
   }
 }
