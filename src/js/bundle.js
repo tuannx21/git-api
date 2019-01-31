@@ -1,11 +1,19 @@
-import { getUser, getAllRepos, renameRepo, deleteRepo, callAPI } from './promiseAPI';
+import { getUser, getAllRepos, renameRepo, deleteRepo, createRepo } from './promiseAPI';
 
+const accessKey = 'ee4fecbcfa2218525f059ed37b42a0e44cadaf88'
 const labelAccessKey = 'git-access-key'
-const inputAccessKey = document.querySelector('#input-access-key')
+const inputNewRepo = document.querySelector('#input-new-repo')
 const imgUserAvatar = document.querySelector('#userAvatar')
 const userName = document.querySelector('#userName')
 const userEmail = document.querySelector('#userEmail')
 const reposList = document.querySelector('#repoList')
+
+//DOM manipulate
+const createElement = () => {}
+
+const deleteElement = (id) => {
+  document.querySelector(`#repo${id}`).style.display = 'none'
+}
 
 //Displaying App
 const showUserInf = ({ name, login, email, avatar_url }) => {
@@ -14,75 +22,58 @@ const showUserInf = ({ name, login, email, avatar_url }) => {
   userEmail.innerHTML = email
 }
 
-const showRepos = (repos, accessKey) => {
-  repos.map((repo) => {
-    let template = document.querySelector('#repo-template')
+const addRepoItem = (repo) => {
+  let template = document.querySelector('#repo-template')
     let clone = template.content.cloneNode(true)
     let repoItem = clone.querySelector('li')
     let inputRepo = repoItem.querySelector('#repoName')
     let removeRepo = repoItem.querySelector('#btnRemoveRepo')
 
-    repoItem.id = repo.id
+    repoItem.id = 'repo' + repo.id
     inputRepo.value = repo.name
     inputRepo.addEventListener('dblclick', function () { this.readOnly = false })
     inputRepo.addEventListener('keypress', function (event) {
       if (event.which === 13 || event.keyCode === 13) {
         this.readOnly = true
-        renameRepo(accessKey, repo.owner.login, repo.name, this.value)
+        renameRepo(repo.owner.login, repo.name, this.value)
           .then(alert('U have edited success, it may take a while to completely rename'))
+          .catch(alert('something happen. Abort change'))
       }
     })
     removeRepo.addEventListener('click', function () {
       let confirmDeleteBox = confirm(`you sure you want to delete repo ${repo.name} ?????`)
       if (confirmDeleteBox === true) {
-        deleteRepo(accessKey, repo.owner.login, repo.name)
-        loadData()
+        deleteRepo(repo.owner.login, repo.name)
+          .then(deleteElement(repo.id))
+          .catch(alert('delete fail'))
       }
     })
     reposList.appendChild(clone)
+}
+
+const showRepos = (repos) => {
+  repos.map((repo) => {
+    addRepoItem(repo)
   })
 }
 
-//Pure Function
-const filterByOwner = (repos) => {
-  return repos.filter((repo) => (repo.owner.login === users.login))
-}
-
 //Util
-const clearAll = () => {
-  reposList.innerHTML = null
-  userEmail.innerHTML = null
-  userName.innerHTML = null
-  imgUserAvatar.src = null
-}
-
-const saveToLocalStorage = (label, item) => {
-  window.localStorage.setItem(label, JSON.stringify(item))
-}
-
-const getItemFromLocalStorage = (label) => {
-  return JSON.parse(window.localStorage.getItem(label))
-}
-
 const onKeyPressAccessKey = () => {
-  inputAccessKey.addEventListener('keypress', function (event) {
+  inputNewRepo.addEventListener('keypress', function (event) {
     if (event.which === 13 || event.keyCode === 13) {
-      clearAll()
-      let accessKey = inputAccessKey.value;
-      saveToLocalStorage(labelAccessKey, accessKey)
-      loadData(accessKey)
-      inputAccessKey.value = ''
+      let newRepoName = inputNewRepo.value
+      createRepo({name: newRepoName})
+        .then(data => {addRepoItem(data)})
+        inputNewRepo.value = ''
     }
   })
 }
 
-const loadData = (accessKey) => {
-  clearAll()
-  let key = accessKey === undefined ? getItemFromLocalStorage(labelAccessKey).toString() : accessKey
-  getUser(key)
+const loadData = () => {
+  getUser()
     .then(user => { showUserInf(user) })
-  getAllRepos(key)
-    .then(repos => { showRepos(repos, key) })
+  getAllRepos()
+    .then(repos => { showRepos(repos) })
 }
 
 const App = () => {
